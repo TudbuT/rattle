@@ -14,8 +14,9 @@ app.use((req, res) => {
     });
     resp.on("end", () => {
       try {
-        res.send(rawData);
-        console.log(rawData)
+        const parsedData = rawData.repl("https://" + URL, "")
+        res.send(parsedData);
+        console.log(parsedData);
       } catch (e) {
         console.error(e.message);
       }
@@ -26,3 +27,7 @@ app.use((req, res) => {
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+String.prototype.repl = function (s1, s2) {
+  return this.split(s1).join(s2);
+}
