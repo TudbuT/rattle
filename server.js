@@ -1,4 +1,4 @@
-const URL = "tudbut.glitch.me"
+const URL = "example.com";
 
 const express = require("express");
 const app = express();
@@ -14,8 +14,14 @@ app.use((req, res) => {
     });
     resp.on("end", () => {
       try {
-        const parsedData = rawData.repl("https://" + URL, "")
-        res.send(parsedData);
+        let parsedData;
+        if (req.get("Content-Type") == "application/json") {
+          parsedData = JSON.parse(rawData);
+          res.json(parsedData);
+        } else {
+          parsedData = rawData.repl("https://" + URL, "");
+          res.send(parsedData);
+        }
         console.log(parsedData);
       } catch (e) {
         console.error(e.message);
@@ -28,6 +34,6 @@ const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-String.prototype.repl = function (s1, s2) {
+String.prototype.repl = function(s1, s2) {
   return this.split(s1).join(s2);
-}
+};
