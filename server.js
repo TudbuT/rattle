@@ -1,4 +1,4 @@
-const URL = "example.org";
+const URL = "www.google.com";
 
 const express = require("express");
 const app = express();
@@ -6,8 +6,15 @@ const http = require("https");
 
 app.use((req, res) => {
   console.log("Req : " + req.path);
-  console.log(req.get("User-Agent"));
-  http.get("https://" + URL + req.originalUrl, {headers: {"User-Agent": req.get("User-Agent")}}, (resp, err) => {
+  console.log(JSON.stringify(req.headers));
+  const headers = req.headers;
+  headers.host = URL;
+  headers.referer = URL;
+  headers["x-forwarded-host"] = URL;
+  headers["accept-encoding"] = "utf8";
+  
+  
+  http.get("https://" + URL + req.originalUrl, {headers: headers}, (resp, err) => {
     resp.setEncoding("utf8");
     let rawData = "";
     resp.on("data", chunk => {
