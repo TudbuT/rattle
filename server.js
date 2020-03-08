@@ -1,4 +1,4 @@
-const URL = "example.com";
+const URL = "example.org";
 
 const express = require("express");
 const app = express();
@@ -6,7 +6,8 @@ const http = require("https");
 
 app.use((req, res) => {
   console.log("Req : " + req.path);
-  http.get("https://" + URL + req.originalUrl, {}, (resp, err) => {
+  console.log(req.get("User-Agent"));
+  http.get("https://" + URL + req.originalUrl, {headers: {"User-Agent": req.get("User-Agent")}}, (resp, err) => {
     resp.setEncoding("utf8");
     let rawData = "";
     resp.on("data", chunk => {
@@ -22,7 +23,6 @@ app.use((req, res) => {
           parsedData = rawData.repl("https://" + URL, "");
           res.send(parsedData);
         }
-        console.log(parsedData);
       } catch (e) {
         console.error(e.message);
       }
