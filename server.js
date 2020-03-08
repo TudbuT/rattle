@@ -1,8 +1,9 @@
-const URL = "www.google.com";
+const URL =       "www.google.com";
+const USE_HTTPS = true;
 
 const express = require("express");
 const app = express();
-const http = require("https");
+const http = USE_HTTPS ? require("https") : require("http");
 
 app.use((req, res) => {
   console.log("Req : " + req.path);
@@ -12,29 +13,35 @@ app.use((req, res) => {
   headers.referer = URL;
   headers["x-forwarded-host"] = URL;
   headers["accept-encoding"] = "utf8";
-  
-  
-  http.get("https://" + URL + req.originalUrl, {headers: headers}, (resp, err) => {
-    resp.setEncoding("utf8");
-    let rawData = "";
-    resp.on("data", chunk => {
-      rawData += chunk;
-    });
-    resp.on("end", () => {
-      try {
-        let parsedData;
-        if (req.get("Content-Type") == "application/json") {
-          parsedData = JSON.parse(rawData);
-          res.json(parsedData);
-        } else {
-          parsedData = rawData.repl("https://" + URL, "");
-          res.send(parsedData);
+
+  http.get(
+    "http" + (USE_HTTPS ? "s" : "") + "://" + URL + req.originalUrl,
+    { headers: headers },
+    (resp, err) => {
+      resp.setEncoding("utf8");
+      let rawData = "";
+      resp.on("data", chunk => {
+        rawData += chunk;
+      });
+      resp.on("end", () => {
+        try {
+          let parsedData;
+          if (req.get("Content-Type") == "application/json") {
+            parsedData = JSON.parse(rawData);
+            res.json(parsedData);
+          } else {
+            parsedData = rawData.repl(
+              "http" + (USE_HTTPS ? "s" : "") + "://" + URL,
+              ""
+            );
+            res.send(parsedData);
+          }
+        } catch (e) {
+          console.error(e.message);
         }
-      } catch (e) {
-        console.error(e.message);
-      }
-    });
-  });
+      });
+    }
+  );
 });
 
 const listener = app.listen(process.env.PORT, () => {
