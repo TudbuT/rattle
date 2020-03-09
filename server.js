@@ -14,34 +14,30 @@ app.use((req, res) => {
   headers["x-forwarded-host"] = URL;
   headers["accept-encoding"] = "utf8";
 
-  http.get(
-    "http" + (USE_HTTPS ? "s" : "") + "://" + URL + req.originalUrl,
-    { headers: headers },
-    (resp, err) => {
+  http.get("http" + (USE_HTTPS ? "s" : "") + "://" + URL + req.originalUrl, { headers: headers }, (resp, err) => {
+    if (
+      !req.path.split("/")[req.path.split("/").length - 1].includes(".") ||
+      !["html", "htm", "txt", "sh", "bat"].includes(req.path.split("/")[req.path.split("/").length - 1].split(".")[1])
+    )
+      resp.setEncoding("utf8");
+    let rawData = "";
+    resp.on("data", chunk => {
+      rawData += chunk;
       if (
         !req.path.split("/")[req.path.split("/").length - 1].includes(".") ||
         !["html", "htm", "txt", "sh", "bat"].includes(req.path.split("/")[req.path.split("/").length - 1].split(".")[1])
       )
-        resp.setEncoding("utf8");
-      let rawData = "";
-      resp.on("data", chunk => {
-        rawData += chunk;
-        if (
-          !req.path.split("/")[req.path.split("/").length - 1].includes(".") ||
-          !["html", "htm", "txt", "sh", "bat"].includes(req.path.split("/")[req.path.split("/").length - 1].split(".")[1])
-        )
-          chunk = chunk
-            .toString()
-            .repl("http://" + URL, "")
-            .repl("https://" + URL, "");
-        res.write(chunk);
-      });
-      resp.on("end", () => {
-        console.log("Gotten response!");
-        res.end();
-      });
-    }
-  );
+        chunk = chunk
+          .toString()
+          .repl("http://" + URL, "")
+          .repl("https://" + URL, "");
+      res.write(chunk);
+    });
+    resp.on("end", () => {
+      console.log("Gotten response!");
+      res.end();
+    });
+  });
 });
 
 const listener = app.listen(process.env.PORT, () => {
