@@ -14,12 +14,13 @@ app.use((req, res) => {
   headers["x-forwarded-host"] = URL;
   headers["accept-encoding"] = "utf8";
   
-  let var1 = req.path.split("/")[req.path.split("/").length - 1];
-  
+  const var1 = req.path.split("/")[req.path.split("/").length - 1];
+  const useUtf8 = ["html", "htm", "css", "js", "ts", "py", "txt", "sh", "bat"];
+
 http.get("http" + (USE_HTTPS ? "s" : "") + "://" + URL + req.originalUrl, { headers: headers }, (resp, err) => {
     if (
       !var1.includes(".") ||
-      (!["html", "htm", "css", "js", "ts", "py", "txt", "sh", "bat"].includes(var1.split(".")[1]) && var1)
+      useUtf8.includes(var1.split(".")[1])
     )
       resp.setEncoding("utf8");
     let rawData = "";
@@ -27,7 +28,7 @@ http.get("http" + (USE_HTTPS ? "s" : "") + "://" + URL + req.originalUrl, { head
       rawData += chunk;
       if (
         !var1.includes(".") ||
-        (!["html", "htm", "css", "js", "ts", "py", "txt", "sh", "bat"].includes(var1.split(".")[1]) && var1)
+        useUtf8.includes(var1.split(".")[1])
       )
         chunk = chunk
           .toString()
