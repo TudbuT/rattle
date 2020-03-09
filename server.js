@@ -18,28 +18,24 @@ app.use((req, res) => {
     "http" + (USE_HTTPS ? "s" : "") + "://" + URL + req.originalUrl,
     { headers: headers },
     (resp, err) => {
-      resp.setEncoding("utf8");
+      if (
+              !req.path.endsWith(".ico") &&
+              !req.path.endsWith(".jpg") &&
+              !req.path.endsWith(".png") &&
+              !req.path.endsWith(".mp3") &&
+              !req.path.endsWith(".mp4") &&
+              !req.path.endsWith(".webm")
+            )
+        resp.setEncoding("utf8")
       let rawData = "";
       resp.on("data", chunk => {
         rawData += chunk;
+        res.write(chunk)
       });
       resp.on("end", () => {
-        try {
-          let parsedData;
-          if (req.get("Content-Type") == "application/json") {
-            parsedData = JSON.parse(rawData);
-            res.json(parsedData);
-          } else {
-            parsedData = rawData.repl(
-              "http" + (USE_HTTPS ? "s" : "") + "://" + URL,
-              ""
-            );
-            res.send(parsedData);
-          }
-        } catch (e) {
-          console.error(e.message);
-        }
-      });
+        console.log("Gotten response!");
+        res.end()
+      })
     }
   );
 });
