@@ -1,4 +1,4 @@
-const URL =       "www.google.com";
+const URL = "www.google.com";
 const USE_HTTPS = true;
 
 const express = require("express");
@@ -19,23 +19,35 @@ app.use((req, res) => {
     { headers: headers },
     (resp, err) => {
       if (
-              !req.path.endsWith(".ico") &&
-              !req.path.endsWith(".jpg") &&
-              !req.path.endsWith(".png") &&
-              !req.path.endsWith(".mp3") &&
-              !req.path.endsWith(".mp4") &&
-              !req.path.endsWith(".webm")
-            )
-        resp.setEncoding("utf8")
+        !req.path.endsWith(".ico") &&
+        !req.path.endsWith(".jpg") &&
+        !req.path.endsWith(".png") &&
+        !req.path.endsWith(".mp3") &&
+        !req.path.endsWith(".mp4") &&
+        !req.path.endsWith(".webm")
+      )
+        resp.setEncoding("utf8");
       let rawData = "";
       resp.on("data", chunk => {
         rawData += chunk;
-        res.write(chunk)
+        if (
+          !req.path.endsWith(".ico") &&
+          !req.path.endsWith(".jpg") &&
+          !req.path.endsWith(".png") &&
+          !req.path.endsWith(".mp3") &&
+          !req.path.endsWith(".mp4") &&
+          !req.path.endsWith(".webm")
+        )
+          chunk = chunk
+            .toString()
+            .repl("http://" + URL, "")
+            .repl("https://" + URL, "");
+        res.write(chunk);
       });
       resp.on("end", () => {
         console.log("Gotten response!");
-        res.end()
-      })
+        res.end();
+      });
     }
   );
 });
