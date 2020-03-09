@@ -19,24 +19,16 @@ app.use((req, res) => {
     { headers: headers },
     (resp, err) => {
       if (
-        !req.path.endsWith(".ico") &&
-        !req.path.endsWith(".jpg") &&
-        !req.path.endsWith(".png") &&
-        !req.path.endsWith(".mp3") &&
-        !req.path.endsWith(".mp4") &&
-        !req.path.endsWith(".webm")
+        !req.path.split("/")[req.path.split("/").length - 1].includes(".") ||
+        !["html", "htm", "txt", "sh", "bat"].includes(req.path.split("/")[req.path.split("/").length - 1].split(".")[1])
       )
         resp.setEncoding("utf8");
       let rawData = "";
       resp.on("data", chunk => {
         rawData += chunk;
         if (
-          !req.path.endsWith(".ico") &&
-          !req.path.endsWith(".jpg") &&
-          !req.path.endsWith(".png") &&
-          !req.path.endsWith(".mp3") &&
-          !req.path.endsWith(".mp4") &&
-          !req.path.endsWith(".webm")
+          !req.path.split("/")[req.path.split("/").length - 1].includes(".") ||
+          !["html", "htm", "txt", "sh", "bat"].includes(req.path.split("/")[req.path.split("/").length - 1].split(".")[1])
         )
           chunk = chunk
             .toString()
