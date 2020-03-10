@@ -16,7 +16,7 @@ app.use((req, res) => {
   headers.referer = useURL;
   headers["x-forwarded-host"] = useURL;
   headers["accept-encoding"] = "utf8";
-
+  
   const var1 = req.path.split("/")[req.path.split("/").length - 1];
   const useUtf8 = ["html", "htm", "css", "js", "ts", "py", "txt", "sh", "bat"];
   if (req.query.rattle) {
