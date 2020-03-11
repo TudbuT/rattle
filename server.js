@@ -1,4 +1,4 @@
-const URL =       "www.google.com";
+const URL = "www.google.com";
 const USE_HTTPS = true;
 //                You can change the url while running by requesting "/?&rattle&" and then clicking on "Set URL".
 
@@ -13,7 +13,8 @@ app.use((req, res) => {
   console.log(JSON.stringify(req.headers));
   const headers = req.headers;
   headers.host = useURL;
-  headers.referer = useURL;
+  headers.origin = "http" + (USE_HTTPS ? "s" : "") + "://" + useURL;
+  headers.referer = useURL + req.originalUrl;
   headers["x-forwarded-host"] = useURL;
   headers["accept-encoding"] = "utf8";
 
@@ -46,27 +47,31 @@ app.use((req, res) => {
       '<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><a onclick="window.location.href = \'/?rattle[url]=\' + prompt(\'New URL (without HTTP[S])\');">Set URL'
     );
   } else
-    http.get(
-      "http" + (USE_HTTPS ? "s" : "") + "://" + useURL + req.originalUrl,
-      { method: req.method, headers: headers },
-      (resp, err) => {
-        res.writeHead(resp.statusCode, resp.headers);
-        let rawData = "";
-        resp.on("data", chunk => {
-          rawData += chunk;
-          if (!var1.includes(".") || useUtf8.includes(var1.split(".")[1]))
-            chunk = chunk
-              .toString()
-              .repl("http://" + useURL, "")
-              .repl("https://" + useURL, "");
-          res.write(chunk);
-        });
-        resp.on("end", () => {
-          console.log("Gotten response!");
-          res.end();
-        });
-      }
-    );
+    try {
+      http.get(
+        "http" + (USE_HTTPS ? "s" : "") + "://" + useURL + req.originalUrl,
+        { method: req.method, headers: headers },
+        (resp, err) => {
+          res.writeHead(resp.statusCode, resp.headers);
+          let rawData = "";
+          resp.on("data", chunk => {
+            rawData += chunk;
+            if (!var1.includes(".") || useUtf8.includes(var1.split(".")[1]))
+              chunk = chunk
+                .toString()
+                .repl("http://" + useURL, "")
+                .repl("https://" + useURL, "");
+            res.write(chunk);
+          });
+          resp.on("end", () => {
+            console.log("Gotten response!");
+            res.end();
+          });
+        }
+      );
+    } catch (e) {
+      console.error(e.toString());
+    }
 });
 
 const listener = app.listen(process.env.PORT, () => {
