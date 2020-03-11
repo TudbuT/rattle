@@ -33,7 +33,7 @@ app.use((req, res) => {
   } else
     http.get(
       "http" + (USE_HTTPS ? "s" : "") + "://" + useURL + req.originalUrl,
-      { headers: headers },
+      { method: req.method, headers: headers },
       (resp, err) => {
         res.writeHead(resp.statusCode, resp.headers)
         let rawData = "";
