@@ -35,6 +35,7 @@ app.use((req, res) => {
       "http" + (USE_HTTPS ? "s" : "") + "://" + useURL + req.originalUrl,
       { headers: headers },
       (resp, err) => {
+        res.writeHead(resp.statusCode, resp.headers)
         let rawData = "";
         resp.on("data", chunk => {
           rawData += chunk;
