@@ -16,7 +16,7 @@ app.use((req, res) => {
   headers.referer = useURL;
   headers["x-forwarded-host"] = useURL;
   headers["accept-encoding"] = "utf8";
-  
+
   const var1 = req.path.split("/")[req.path.split("/").length - 1];
   const useUtf8 = ["html", "htm", "css", "js", "ts", "py", "txt", "sh", "bat"];
   if (req.query.rattle) {
@@ -35,8 +35,6 @@ app.use((req, res) => {
       "http" + (USE_HTTPS ? "s" : "") + "://" + useURL + req.originalUrl,
       { headers: headers },
       (resp, err) => {
-        if (!var1.includes(".") || useUtf8.includes(var1.split(".")[1]))
-          resp.setEncoding("utf8");
         let rawData = "";
         resp.on("data", chunk => {
           rawData += chunk;
