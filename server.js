@@ -18,7 +18,7 @@ app.use((req, res) => {
   headers["accept-encoding"] = "utf8";
 
   const var1 = req.path.split("/")[req.path.split("/").length - 1];
-  const useUtf8 = ["html", "htm", "css", "js", "ts", "py", "txt", "sh", "bat"];
+  const useUtf8 = ["html", "htm", "css", "js", "ts", "py", "txt", "sh", "bat", "java", "xml", "php", "aspx", "json"];
   if (req.query.rattle) {
     if (req.query.rattle.url) {
       useURL = req.query.rattle.url;
@@ -35,6 +35,7 @@ app.use((req, res) => {
       "http" + (USE_HTTPS ? "s" : "") + "://" + useURL + req.originalUrl,
       { headers: headers },
       (resp, err) => {
+        res.writeHead(resp.statusCode, resp.headers)
         let rawData = "";
         resp.on("data", chunk => {
           rawData += chunk;
