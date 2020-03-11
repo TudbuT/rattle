@@ -9,7 +9,7 @@ const http = USE_HTTPS ? require("https") : require("http");
 let useURL = URL;
 
 app.use((req, res) => {
-  console.log("Req : " + req.method + " - " + req.originalUrl);
+  console.log("REQ: " + req.method + " - " + req.originalUrl);
   console.log(JSON.stringify(req.headers));
   const headers = req.headers;
   headers.host = useURL;
