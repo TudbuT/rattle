@@ -1,4 +1,4 @@
-const URL = "www.google.com";
+const URL =       "www.google.com";
 const USE_HTTPS = true;
 //                You can change the url while running by requesting "/?&rattle&" and then clicking on "Set URL".
 
