@@ -64,7 +64,7 @@ app.use((req, res) => {
                 .repl("http://www." + useURL, "")
                 .repl("https://www." + useURL, "")
                 .repl("http://" + useURL.split("www.")[1], "")
-                .repl("https://www." + useURL.split("www.")[1], "");
+                .repl("https://" + useURL.split("www.")[1], "");
             res.write(chunk);
           });
           resp.on("end", () => {
