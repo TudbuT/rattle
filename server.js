@@ -60,7 +60,11 @@ app.use((req, res) => {
               chunk = chunk
                 .toString()
                 .repl("http://" + useURL, "")
-                .repl("https://" + useURL, "");
+                .repl("https://" + useURL, "")
+                .repl("http://www." + useURL, "")
+                .repl("https://www." + useURL, "")
+                .repl("http://" + useURL.split("www.")[1], "")
+                .repl("https://www." + useURL.split("www.")[1], "");
             res.write(chunk);
           });
           resp.on("end", () => {
